@@ -11,7 +11,7 @@
 
 void ADVANCE()
 {
-    Serial.println("ADVANCE");
+    Serial.println("go");
 }
 void BACK()
 {
@@ -21,4 +21,72 @@ void LEFT()
 {
     Serial.println("LEFT");
 }
-void 
+void LEFTM()
+{
+    Serial.println("LEFTM");
+} 
+void RIGHT()
+{
+    Serial.println("RIGHT");
+}
+void RIGHTM()
+{
+    Serial.println("RIGHTM");
+}
+void STOP()
+{
+    Serial.println("STOP");
+}
+
+void CMD_Control()
+{
+    char Cmd_Date=0;
+    if(Serial.available())
+    {
+        Cmd_Date=Serial.read();
+    }
+    if(Cmd_Date=='w')
+    {
+        ADVANCE();
+    }
+    if(Cmd_Date=='B')
+    {
+       BACK();
+    }
+    if(Cmd_Date=='l')
+    { 
+        LEFT();
+    }
+    if(Cmd_Date=='L')
+    {
+        LEFTM();
+    }
+    if(Cmd_Date=='r')
+    {
+        RIGHT();
+    }
+    if(Cmd_Date=='R')
+    {
+        RIGHTM();
+    }
+    if(Cmd_Date=='s')
+    {
+        STOP();
+    }
+    if(Cmd_Date=='b')
+    {
+        Serial.println(BAUDRATE);
+    }
+    
+}
+
+void setup()
+{
+    Serial.begin(BAUDRATE);
+
+}
+void loop()
+{
+    CMD_Control();
+
+}
