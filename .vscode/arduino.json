@@ -1,6 +1,0 @@
-{
-    "board": "arduino:avr:uno",
-    "sketch": "rosarduino.ino",
-    "port": "/dev/ttyACM0",
-    "programmer": "AVRISP mkII"
-}
