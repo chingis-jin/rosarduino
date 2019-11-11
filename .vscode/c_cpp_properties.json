@@ -3,11 +3,13 @@
         {
             "name": "Linux",
             "includePath": [
+                "/home/d/Downloads/arduino-1.8.9/tools/**",
+                "/home/d/Downloads/arduino-1.8.9/hardware/arduino/avr/**",
                 "/home/d/.arduino15/packages/arduino/tools/**",
                 "/home/d/.arduino15/packages/arduino/hardware/sam/1.6.12/**"
             ],
             "forcedInclude": [
-                "/home/d/.arduino15/packages/arduino/hardware/sam/1.6.12/cores/arduino/Arduino.h"
+                "/home/d/Downloads/arduino-1.8.9/hardware/arduino/avr/cores/arduino/Arduino.h"
             ],
             "intelliSenseMode": "gcc-x64",
             "compilerPath": "/usr/bin/gcc",
