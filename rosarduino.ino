@@ -30,6 +30,8 @@ void resetCommand() {
   cmd = NULL;
   memset(argv1, 0, sizeof(argv1));
   memset(argv2, 0, sizeof(argv2));
+  memset(argv3, 0, sizeof(argv3));
+  memset(argv4, 0, sizeof(argv4));
   arg1 = 0;
   arg2 = 0;
   arg3 = 0;
@@ -152,6 +154,8 @@ void loop() {
     if (chr == 13) {
       if (arg == 1) argv1[indexx] = NULL;
       else if (arg == 2) argv2[indexx] = NULL;
+      else if (arg == 3) argv3[indexx] == NULL;
+      else if (arg == 4) argv4[indexx] == NULL;
       runCommand();
       resetCommand();
     }
