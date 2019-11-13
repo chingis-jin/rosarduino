@@ -1,30 +1,32 @@
 #include "commands.h";
 // motor one
-int enA = 5;
-int in1 = 7;
-int in2 = 8;
-// motor two
-int enB = 6;
-int in3 = 9;
-int in4 = 10;
-boolean directionLeft = false;
-boolean directionRight = false;
+
+boolean directionLeftF = false;
+boolean directionLeftB = false;
+boolean directionRightF = false;
+boolean directionRightB = false;
 
 boolean direction(int i){
-   if(i == LEFT){
-      return directionLeft;
-   }else{
-      return directionRight;
+   if(i == LEFTF){
+      return directionLeftF;
+   }else if (i == LEFTB) {
+      return directionLeftB;
+   }else if (i == RIGHTF) {
+      return directionRightF;
+   }else if (i == RIGHTB) {
+      return directionRightB;
    }
 }
   void initMotorController() {
   // set all the motor control pins to outputs
-  pinMode(enA, OUTPUT);
-  pinMode(enB, OUTPUT);
-  pinMode(in1, OUTPUT);
-  pinMode(in2, OUTPUT);
-  pinMode(in3, OUTPUT);
-  pinMode(in4, OUTPUT);
+  pinMode(PWMLF, OUTPUT);
+  pinMode(DIRLF, OUTPUT);
+  pinMode(PWMLB, OUTPUT);
+  pinMode(DIRLB, OUTPUT);
+  pinMode(PWMRF, OUTPUT);
+  pinMode(DIRRF, OUTPUT);
+  pinMode(PWMRB, OUTPUT);
+  pinMode(PWMRB, OUTPUT);
   }
 
   void setMotorSpeed(int i, int spd) {
@@ -34,35 +36,55 @@ boolean direction(int i){
        if(spd<-MAX_PWM){
       spd=-1*MAX_PWM;
     }
-    if (i == LEFT){
+    if (i == LEFTF){
         if(spd>=0){
-            directionLeft = FORWARDS;
-            digitalWrite(in2, HIGH);
-            digitalWrite(in1, LOW);
-            analogWrite(enA, spd);
+            directionLeftF = FORWARDS;
+            digitalWrite(DIRLF, LOW);
+            analogWrite(PWMLF, spd);
         }else if(spd < 0){
-            directionLeft = BACKWARDS;
-            digitalWrite(in1, HIGH);
-            digitalWrite(in2, LOW);
-            analogWrite(enA, -spd);
+            directionLeftF = BACKWARDS;
+            digitalWrite(DIRLF, HIGH);
+            analogWrite(PWMLF, -spd);
+        }
+    }    
+    else if (i == LEFTB) {
+        if(spd>=0){
+            directionLeftB = FORWARDS;
+            digitalWrite(DIRLB, LOW);
+            analogWrite(PWMLB, spd);
+        }else if(spd<0){
+            directionLeftB = BACKWARDS;
+            digitalWrite(DIRLB, HIGH);
+            analogWrite(PWMLB, -spd);
         }
     }
-    else {
+    else if(i== RIGHTF) {
         if(spd>=0){
-            directionRight = FORWARDS;
-            digitalWrite(in3, HIGH);
-            digitalWrite(in4, LOW);
-            analogWrite(enB, spd);
+            directionRightF = FORWARDS;
+            digitalWrite(DIRRF, HIGH);
+            analogWrite(PWMRF, spd);
         }else if(spd<0){
-            directionRight = BACKWARDS;
-            digitalWrite(in4, HIGH);
-            digitalWrite(in3, LOW);
-            analogWrite(enB, -spd);
+            directionRightF = BACKWARDS;
+            digitalWrite(DIRRF, LOW);
+            analogWrite(PWMRF, -spd);
+        }
+    }
+    else if(i == RIGHTB) {
+        if(spd>=0){
+            directionRightB = FORWARDS;
+            digitalWrite(DIRRB, HIGH);
+            analogWrite(PWMRB, spd);
+        }else if(spd<0){
+            directionRightB = BACKWARDS;
+            digitalWrite(DIRRB, LOW);
+            analogWrite(PWMRB, -spd);
         }
     }
   }
 
-  void setMotorSpeeds(int leftSpeed, int rightSpeed) {
-    setMotorSpeed(LEFT, leftSpeed);
-    setMotorSpeed(RIGHT, rightSpeed);
+  void setMotorSpeeds(int leftFSpeed,int leftBSpeed,int rightFSpeed, int rightBSpeed) {
+    setMotorSpeed(LEFTF, leftFSpeed);
+    setMotorSpeed(RIGHTF, rightFSpeed);
+    setMotorSpeed(LEFTB, leftBSpeed);
+    setMotorSpeed(RIGHTB, rightBSpeed);
   }

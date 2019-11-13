@@ -2,48 +2,83 @@
 #include "commands.h";
 
 /* encode */
-volatile long left_enc_pos = 0L;
-volatile long right_enc_pos = 0L;
-int left_rotate = 0;
-int right_rotate = 0;
+volatile long leftF_enc_pos = 0L;
+volatile long rightF_enc_pos = 0L;
+volatile long leftB_enc_pos = 0L;
+volatile long rightB_enc_pos = 0L;
+int leftF_rotate = 0;
+int rightF_rotate = 0;
+int leftB_rotate = 0;
+int rightB_rotate = 0;
 
 void initEncoders(){
-  pinMode(2, INPUT);
-  pinMode(3, INPUT);
-  pinMode(19, INPUT);
-  pinMode(18, INPUT);
-  attachInterrupt(0, encoderLeftISR, CHANGE);  
-  attachInterrupt(1, encoderLeftISR,  CHANGE);  
-  attachInterrupt(4, encoderRightISR, CHANGE);
-  attachInterrupt(5, encoderRightISR, CHANGE);
+  pinMode(A4, INPUT);
+  pinMode(A5, INPUT);
+  pinMode(A2, INPUT);
+  pinMode(A3, INPUT);
+  pinMode(A0, INPUT);
+  pinMode(A1, INPUT);
+  pinMode(SDA1, INPUT);
+  pinMode(SCL1, INPUT);
+  attachInterrupt(A4, encoderLeftFISR, CHANGE);  
+  attachInterrupt(A5, encoderLeftFISR,  CHANGE);  
+  attachInterrupt(A2, encoderLeftBISR, CHANGE);
+  attachInterrupt(A3, encoderLeftBISR, CHANGE);
+  attachInterrupt(A0, encoderRightFISR, CHANGE);  
+  attachInterrupt(A1, encoderRightFISR,  CHANGE);  
+  attachInterrupt(SDA1, encoderRightBISR, CHANGE);
+  attachInterrupt(SCL1, encoderRightBISR, CHANGE);
 }
 
-void encoderLeftISR(){
-    if(direction(LEFT) == BACKWARDS){
-        left_enc_pos--;
+void encoderLeftFISR(){
+    if(direction(LEFTF) == BACKWARDS){
+        leftF_enc_pos--;
     }else{
-        left_enc_pos++;
+        leftF_enc_pos++;
     }
 }
 
-void encoderRightISR(){
-    if(direction(RIGHT) == BACKWARDS){
-      right_enc_pos--;
+void encoderRightFISR(){
+    if(direction(RIGHTF) == BACKWARDS){
+      rightF_enc_pos--;
     }else{
-      right_enc_pos++;
+      rightF_enc_pos++;
+    }
+}
+void encoderLeftBISR(){
+    if(direction(LEFTB) == BACKWARDS){
+        leftB_enc_pos--;
+    }else{
+        leftB_enc_pos++;
+    }
+}
+
+void encoderRightBISR(){
+    if(direction(RIGHTB) == BACKWARDS){
+      rightB_enc_pos--;
+    }else{
+      rightB_enc_pos++;
     }
 }
 
   long readEncoder(int i) {
       long encVal = 0L;
-  if (i == LEFT)  {
+  if (i == LEFTF)  {
     noInterrupts();
-    encVal = left_enc_pos;
+    encVal = leftF_enc_pos;
     interrupts();
   }
-  else {
+  else if(i == RIGHTF){
     noInterrupts();
-    encVal = right_enc_pos;
+    encVal = rightF_enc_pos;
+    interrupts();
+  }  else if(i == LEFTB){
+    noInterrupts();
+    encVal = leftB_enc_pos;
+    interrupts();
+  }  else if(i == RIGHTB){
+    noInterrupts();
+    encVal = rightB_enc_pos;
     interrupts();
   }
   return encVal;
@@ -51,20 +86,32 @@ void encoderRightISR(){
 
   /* Wrap the encoder reset function */
   void resetEncoder(int i) {
-    if (i == LEFT){
+    if (i == LEFTF){
       noInterrupts();
-      left_enc_pos=0L;
+      leftF_enc_pos=0L;
       interrupts();
       return;
-    } else { 
+    } else if(i == LEFTB) { 
       noInterrupts();
-      right_enc_pos=0L;
+      leftB_enc_pos=0L;
+      interrupts();
+      return;
+    } else if(i == RIGHTF) { 
+      noInterrupts();
+      rightF_enc_pos=0L;
+      interrupts();
+      return;
+    } else if(i == RIGHTB) { 
+      noInterrupts();
+      rightB_enc_pos=0L;
       interrupts();
       return;
     }
   }
 
 void resetEncoders() {
-  resetEncoder(LEFT);
-  resetEncoder(RIGHT);
+  resetEncoder(LEFTF);
+  resetEncoder(RIGHTF);
+  resetEncoder(LEFTB);
+  resetEncoder(RIGHTB);
 }

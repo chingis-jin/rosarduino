@@ -12,7 +12,20 @@
 #define DIGITAL_WRITE  'w'
 #define ANALOG_WRITE   'x'
 
-#define LEFT            0
-#define RIGHT           1
+#define PWMLF 3
+#define DIRLF 2
+#define PWMLB 5
+#define DIRLB 4
+#define PWMRF 6
+#define DIRRF 7
+#define PWMRB 9
+#define DIRRB 8
+
+
+
+#define LEFTF            0
+#define LEFTB           1
+#define RIGHTF           10
+#define RIGHTB            11
 #define FORWARDS true
 #define BACKWARDS false

@@ -14,13 +14,17 @@ long lastMotorCommand = AUTO_STOP_INTERVAL;
 
 /* Variable initialization */
 int arg = 0;
-int index = 0;
+int indexx = 0;
 char chr;
 char cmd;
 char argv1[16];
 char argv2[16];
+char argv3[16];
+char argv4[16];
 long arg1;
 long arg2;
+long arg3;
+long arg4;
 
 void resetCommand() {
   cmd = NULL;
@@ -28,8 +32,10 @@ void resetCommand() {
   memset(argv2, 0, sizeof(argv2));
   arg1 = 0;
   arg2 = 0;
-  arg = 0;
-  index = 0;
+  arg3 = 0;
+  arg4 = 0;
+  arg = 0; 
+  indexx = 0;
 }
 
 int runCommand() {
@@ -39,25 +45,39 @@ int runCommand() {
   int pid_args[4];
   arg1 = atoi(argv1);
   arg2 = atoi(argv2);
+  arg3 = atoi(argv3);
+  arg4 = atoi(argv4);
 
   switch (cmd) {
     case GET_BAUDRATE:
       Serial.println(BAUDRATE);
       break;
     case READ_PIDIN:
-      Serial.print( readPidIn(LEFT));
+      Serial.print( readPidIn(LEFTF));
       Serial.print(" ");
-      Serial.println( readPidIn(RIGHT));
+      Serial.print( readPidIn(LEFTB));
+      Serial.print(" ");
+      Serial.print( readPidIn(RIGHTF));
+      Serial.print(" ");
+      Serial.println( readPidIn(RIGHTB));
       break;      
     case READ_PIDOUT:
-      Serial.print( readPidOut(LEFT));
+      Serial.print( readPidOut(LEFTF));
       Serial.print(" ");
-      Serial.println( readPidOut(RIGHT));
+      Serial.print( readPidOut(LEFTB));
+      Serial.print(" ");
+      Serial.print( readPidOut(RIGHTF));
+      Serial.print(" ");
+      Serial.println( readPidOut(RIGHTB));
       break;
     case READ_ENCODERS:
-      Serial.print(readEncoder(LEFT));
+      Serial.print(readEncoder(LEFTF));
       Serial.print(" ");
-      Serial.println(readEncoder(RIGHT));
+      Serial.print(readEncoder(LEFTB));
+      Serial.print(" ");
+      Serial.print(readEncoder(RIGHTF));
+      Serial.print(" ");
+      Serial.println(readEncoder(RIGHTB));
       break;
     case RESET_ENCODERS:
       resetEncoders();
@@ -66,13 +86,19 @@ int runCommand() {
       break;
     case MOTOR_SPEEDS:
       lastMotorCommand = millis();
-      if (arg1 == 0 && arg2 == 0) {
-        setMotorSpeeds(0, 0);
+      if (arg1 == 0 && arg2 == 0 && arg3 == 0 && arg4 ==0) {
+        setMotorSpeeds(0,0,0,0);
         moving = 0;
       }
       else moving = 1;
-      leftPID.TargetTicksPerFrame = arg1;
-      rightPID.TargetTicksPerFrame = arg2;
+      leftFPID.TargetTicksPerFrame = arg1;
+      leftBPID.TargetTicksPerFrame = arg2;
+      rightFPID.TargetTicksPerFrame = arg3;
+      rightBPID.TargetTicksPerFrame = arg4;
+      Serial.println(arg1);
+      Serial.println(arg2);
+      Serial.println(arg3);
+      Serial.println(arg4);
       Serial.println("OK");
       break;
     case UPDATE_PID:
@@ -112,7 +138,7 @@ int runCommand() {
   }
 }
 
-unsigned long time = 0, old_time = 0;
+unsigned long timex = 0, old_time = 0;
 void setup() {
   Serial.begin(BAUDRATE);
   initEncoders();
@@ -124,17 +150,27 @@ void loop() {
   while (Serial.available() > 0) {
     chr = Serial.read();
     if (chr == 13) {
-      if (arg == 1) argv1[index] = NULL;
-      else if (arg == 2) argv2[index] = NULL;
+      if (arg == 1) argv1[indexx] = NULL;
+      else if (arg == 2) argv2[indexx] = NULL;
       runCommand();
       resetCommand();
     }
     else if (chr == ' ') {
       if (arg == 0) arg = 1;
       else if (arg == 1)  {
-        argv1[index] = NULL;
+        argv1[indexx] = NULL;
         arg = 2;
-        index = 0;
+        indexx = 0;
+      }
+      else if (arg == 2){
+        argv2[indexx] = NULL;
+        arg = 3;
+        indexx = 0;
+      }
+      else if (arg == 3){
+        argv3[indexx] = NULL;
+        arg = 4;
+        indexx = 0;
       }
       continue;
     }
@@ -143,12 +179,20 @@ void loop() {
         cmd = chr;
       }
       else if (arg == 1) {
-        argv1[index] = chr;
-        index++;
+        argv1[indexx] = chr;
+        indexx++;
       }
       else if (arg == 2) {
-        argv2[index] = chr;
-        index++;
+        argv2[indexx] = chr;
+        indexx++;
+      }
+      else if (arg == 3){
+        argv3[indexx] =chr;
+        indexx++;  
+      }
+      else if (arg ==4){
+        argv4[indexx] =chr;
+        indexx++;
       }
     }
   }
@@ -160,7 +204,7 @@ void loop() {
 
   if ((millis() - lastMotorCommand) > AUTO_STOP_INTERVAL) {
     ;
-    setMotorSpeeds(0, 0);
+    setMotorSpeeds(0,0,0,0);
     moving = 0;
   }
 }
